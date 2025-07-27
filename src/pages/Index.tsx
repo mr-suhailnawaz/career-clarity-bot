@@ -1,12 +1,45 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { HeroSection } from "@/components/HeroSection";
+import { ResumeUpload } from "@/components/ResumeUpload";
+import { AnalysisResults } from "@/components/AnalysisResults";
+
+type AppState = 'hero' | 'upload' | 'results';
 
 const Index = () => {
+  const [currentState, setCurrentState] = useState<AppState>('hero');
+  const [analysisData, setAnalysisData] = useState<any>(null);
+
+  const handleGetStarted = () => {
+    setCurrentState('upload');
+  };
+
+  const handleFileAnalyzed = (analysis: any) => {
+    setAnalysisData(analysis);
+    setCurrentState('results');
+  };
+
+  const handleStartOver = () => {
+    setCurrentState('hero');
+    setAnalysisData(null);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      {currentState === 'hero' && (
+        <HeroSection onGetStarted={handleGetStarted} />
+      )}
+      
+      {currentState === 'upload' && (
+        <div className="py-20">
+          <ResumeUpload onFileAnalyzed={handleFileAnalyzed} />
+        </div>
+      )}
+      
+      {currentState === 'results' && analysisData && (
+        <div className="py-20">
+          <AnalysisResults analysis={analysisData} onStartOver={handleStartOver} />
+        </div>
+      )}
     </div>
   );
 };
